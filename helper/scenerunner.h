@@ -3,8 +3,8 @@
 #include <GLFW/glfw3.h>
 #include "glutils.h"
 
-#define WIN_WIDTH 800
-#define WIN_HEIGHT 600
+#define WIN_WIDTH 1280
+#define WIN_HEIGHT 720
 
 #include <map>
 #include <string>
@@ -29,7 +29,7 @@ public:
 #else
         // Select OpenGL 4.6
         glfwWindowHint( GLFW_CONTEXT_VERSION_MAJOR, 4 );
-        glfwWindowHint( GLFW_CONTEXT_VERSION_MINOR, 6 );
+        glfwWindowHint( GLFW_CONTEXT_VERSION_MINOR, 5 );
 #endif
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -72,7 +72,9 @@ public:
     int run(Scene & scene) {
         scene.setDimensions(fbw, fbh);
         scene.initScene();
-        scene.resize(fbw, fbh);
+        scene.resize(fbw, fbh); 
+
+        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
         // Enter the main loop
         mainLoop(window, scene);
@@ -120,14 +122,12 @@ private:
         while( ! glfwWindowShouldClose(window) && !glfwGetKey(window, GLFW_KEY_ESCAPE) ) {
             GLUtils::checkForOpenGLError(__FILE__,__LINE__);
 			
-            scene.update(float(glfwGetTime()));
+            scene.update(float(glfwGetTime()), window);
             scene.render();
             glfwSwapBuffers(window);
 
             glfwPollEvents();
 			int state = glfwGetKey(window, GLFW_KEY_SPACE);
-			if (state == GLFW_PRESS)
-				scene.animate(!scene.animating());
         }
     }
 };
