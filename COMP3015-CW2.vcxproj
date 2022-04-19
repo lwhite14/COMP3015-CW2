@@ -188,16 +188,16 @@
     <ClCompile Include="scenebasic_uniform.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include=".gitignore" />
+    <None Include="README.md" />
     <None Include="shader\basic_uniform.frag" />
     <None Include="shader\basic_uniform.vert" />
     <None Include="shader\normal_map.frag" />
     <None Include="shader\normal_map.vert" />
-    <None Include="shader\normal_map_gaussian.frag" />
     <None Include="shader\skybox.frag" />
     <None Include="shader\skybox.vert" />
     <None Include="shader\spotlight.frag" />
     <None Include="shader\spotlight.vert" />
-    <None Include="shader\spotlight_gaussian.frag" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
