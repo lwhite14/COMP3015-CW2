@@ -21,7 +21,8 @@ private:
     GUIWindow guiWindow;
 
 public:
-    SceneRunner(const std::string & windowTitle, int width = WIN_WIDTH, int height = WIN_HEIGHT, int samples = 0) : debug(true) {
+    SceneRunner(const std::string & windowTitle, int width = WIN_WIDTH, int height = WIN_HEIGHT, int samples = 0) : debug(true)
+    {
         // Initialize GLFW
         if (!glfwInit()) 
         {
@@ -40,15 +41,19 @@ public:
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
         glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
-        if(debug) 
-			glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
-        if(samples > 0) {
+        if (debug) 
+        {
+            glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
+        }
+        if(samples > 0) 
+        {
             glfwWindowHint(GLFW_SAMPLES, samples);
         }
 
         // Open the window
         window = glfwCreateWindow( WIN_WIDTH, WIN_HEIGHT, windowTitle.c_str(), NULL, NULL );
-        if( ! window ) {
+        if( ! window ) 
+        {
 			std::cerr << "Unable to create OpenGL context." << std::endl;
             glfwTerminate();
             exit( EXIT_FAILURE );
@@ -59,39 +64,43 @@ public:
         glfwGetFramebufferSize(window, &fbw, &fbh);
 
         // Load the OpenGL functions.
-        if(!gladLoadGL()) { exit(-1); }
+        if(!gladLoadGL()) 
+        { 
+            exit(-1); 
+        }
 
         GLUtils::dumpGLInfo();
 
         // Initialization
         glClearColor(0.5f,0.5f,0.5f,1.0f);
 #ifndef __APPLE__
-		if (debug) {
+		if (debug) 
+        {
 			glDebugMessageCallback(GLUtils::debugCallback, nullptr);
 			glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, NULL, GL_TRUE);
-			glDebugMessageInsert(GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_MARKER, 0,
-				GL_DEBUG_SEVERITY_NOTIFICATION, -1, "Start debugging");
+			glDebugMessageInsert(GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_MARKER, 0, GL_DEBUG_SEVERITY_NOTIFICATION, -1, "Start debugging");
 		}
 #endif
         guiWindow = GUIWindow();
         guiWindow.init(window);
     }
 
-    int run(Scene & scene) {
+    int run(Scene & scene) 
+    {
         scene.setDimensions(fbw, fbh);
         scene.initScene();
         scene.resize(fbw, fbh); 
 
-        //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
         // Enter the main loop
         mainLoop(window, scene);
 
 #ifndef __APPLE__
-		if( debug )
-			glDebugMessageInsert(GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_MARKER, 1,
-				GL_DEBUG_SEVERITY_NOTIFICATION, -1, "End debug");
+        if (debug) 
+        {
+            glDebugMessageInsert(GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_MARKER, 1, GL_DEBUG_SEVERITY_NOTIFICATION, -1, "End debug");
+        }
 #endif
 
         guiWindow.cleanUp();
@@ -103,15 +112,18 @@ public:
         return EXIT_SUCCESS;
     }
 
-    static std::string parseCLArgs(int argc, char ** argv, std::map<std::string, std::string> & sceneData) {
-        if( argc < 2 ) {
+    static std::string parseCLArgs(int argc, char ** argv, std::map<std::string, std::string> & sceneData) 
+    {
+        if( argc < 2 ) 
+        {
             printHelpInfo(argv[0], sceneData);
             exit(EXIT_FAILURE);
         }
 
         std::string recipeName = argv[1];
         auto it = sceneData.find(recipeName);
-        if( it == sceneData.end() ) {
+        if( it == sceneData.end() ) 
+        {
             printf("Unknown recipe: %s\n\n", recipeName.c_str());
             printHelpInfo(argv[0], sceneData);
             exit(EXIT_FAILURE);
@@ -121,16 +133,20 @@ public:
     }
 
 private:
-    static void printHelpInfo(const char * exeFile,  std::map<std::string, std::string> & sceneData) {
+    static void printHelpInfo(const char * exeFile,  std::map<std::string, std::string> & sceneData) 
+    {
         printf("Usage: %s recipe-name\n\n", exeFile);
         printf("Recipe names: \n");
-        for( auto it : sceneData ) {
+        for( auto it : sceneData ) 
+        {
             printf("  %11s : %s\n", it.first.c_str(), it.second.c_str());
         }
     }
 
-    void mainLoop(GLFWwindow * window, Scene & scene) {
-        while( ! glfwWindowShouldClose(window) && !glfwGetKey(window, GLFW_KEY_ESCAPE) ) {
+    void mainLoop(GLFWwindow * window, Scene & scene) 
+    {
+        while( ! glfwWindowShouldClose(window) && !glfwGetKey(window, GLFW_KEY_ESCAPE) ) 
+        {
             GLUtils::checkForOpenGLError(__FILE__, __LINE__);
 
             glfwSwapBuffers(window);

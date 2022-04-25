@@ -8,6 +8,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "motion.h"
 
+#include <iostream>
+
 class Camera
 {
 public:
@@ -19,12 +21,15 @@ public:
 	float lastFrame;
 
 	bool firstMouse;
-	bool firstFrame;
-	int firstMouseCounter;
+	bool canFirstMouse;
+
 	float yaw;
 	float pitch;
 	float lastX;
 	float lastY;
+
+	bool isActive;
+	bool canChangeActive = true;
 
 	Motion motion;
 
@@ -32,12 +37,13 @@ public:
 
 	Camera(unsigned int SCR_WIDTH, unsigned int SCR_HEIGHT)
 	{
+		isActive = true;
+
 		deltaTime = 0.0f;
 		lastFrame = 0.0f;
 
 		firstMouse = true;
-		firstFrame = true;
-		firstMouseCounter = 0;
+		canFirstMouse = true;
 		yaw = -90.0f;
 		pitch = 0.0f;
 		lastX = SCR_WIDTH / 2.0;
@@ -63,36 +69,74 @@ public:
 		int sState = glfwGetKey(window, GLFW_KEY_S);
 		int aState = glfwGetKey(window, GLFW_KEY_A);
 		int dState = glfwGetKey(window, GLFW_KEY_D);
-		if (wState == GLFW_PRESS)
+		int shiftState = glfwGetKey(window, GLFW_KEY_LEFT_SHIFT);
+		if (shiftState == GLFW_PRESS)
 		{
-			motion.Forward = true;
+			if (canChangeActive)
+			{
+				canChangeActive = false;
+				canFirstMouse = true;
+				if (isActive) 
+				{
+					isActive = false;
+					glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+				}
+				else if (!isActive) 
+				{
+					isActive = true;
+					glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+				}
+			}
 		}
-		if (sState == GLFW_PRESS)
+		if (shiftState == GLFW_RELEASE)
 		{
-			motion.Backward = true;
+			if (canFirstMouse) 
+			{
+				canChangeActive = true;
+				firstMouse = true;
+			}
+			canFirstMouse = false;
 		}
-		if (aState == GLFW_PRESS)
+		if (isActive) 
 		{
-			motion.Left = true;
+			if (wState == GLFW_PRESS)
+			{
+				motion.Forward = true;
+			}
+			if (sState == GLFW_PRESS)
+			{
+				motion.Backward = true;
+			}
+			if (aState == GLFW_PRESS)
+			{
+				motion.Left = true;
+			}
+			if (dState == GLFW_PRESS)
+			{
+				motion.Right = true;
+			}
+			if (wState == GLFW_RELEASE)
+			{
+				motion.Forward = false;
+			}
+			if (sState == GLFW_RELEASE)
+			{
+				motion.Backward = false;
+			}
+			if (aState == GLFW_RELEASE)
+			{
+				motion.Left = false;
+			}
+			if (dState == GLFW_RELEASE)
+			{
+				motion.Right = false;
+			}
 		}
-		if (dState == GLFW_PRESS)
-		{
-			motion.Right = true;
-		}
-		if (wState == GLFW_RELEASE)
+		else 
 		{
 			motion.Forward = false;
-		}
-		if (sState == GLFW_RELEASE)
-		{
 			motion.Backward = false;
-		}
-		if (aState == GLFW_RELEASE)
-		{
 			motion.Left = false;
-		}
-		if (dState == GLFW_RELEASE)
-		{
 			motion.Right = false;
 		}
 	}
@@ -121,42 +165,45 @@ public:
 
 	void MouseCallback(GLFWwindow* window)
 	{
-		double xpos, ypos;
-		glfwGetCursorPos(window, &xpos, &ypos);
-
-		if (firstMouse)
+		if (isActive)
 		{
+			double xpos, ypos;
+			glfwGetCursorPos(window, &xpos, &ypos);
+
+			if (firstMouse)
+			{
+				lastX = xpos;
+				lastY = ypos;
+				firstMouse = false;
+			}
+
+			float xoffset = xpos - lastX;
+			float yoffset = lastY - ypos;
 			lastX = xpos;
 			lastY = ypos;
-			firstMouse = false;
+
+			float sensitivity = 0.1f;
+			xoffset *= sensitivity;
+			yoffset *= sensitivity;
+
+			yaw += xoffset;
+			pitch += yoffset;
+
+			if (pitch > 89.0f)
+			{
+				pitch = 89.0f;
+			}
+			if (pitch < -89.0f)
+			{
+				pitch = -89.0f;
+			}
+
+			glm::vec3 front;
+			front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+			front.y = sin(glm::radians(pitch));
+			front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+			cameraFront = glm::normalize(front);
 		}
-
-		float xoffset = xpos - lastX;
-		float yoffset = lastY - ypos;
-		lastX = xpos;
-		lastY = ypos;
-
-		float sensitivity = 0.1f;
-		xoffset *= sensitivity;
-		yoffset *= sensitivity;
-
-		yaw += xoffset;
-		pitch += yoffset;
-
-		if (pitch > 89.0f)
-		{
-			pitch = 89.0f;
-		}
-		if (pitch < -89.0f)
-		{
-			pitch = -89.0f;
-		}
-
-		glm::vec3 front;
-		front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-		front.y = sin(glm::radians(pitch));
-		front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-		cameraFront = glm::normalize(front);	
 	}
 
 	glm::mat4 ViewLookAt(glm::mat4 inputView) 
