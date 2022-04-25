@@ -37,6 +37,8 @@ public:
     void update(float t, GLFWwindow* window);
     void render();
     void resize(int, int);
+    void setNormalShading();
+    void setSilhouetteShading();
 };
 
 #endif // SCENEBASIC_UNIFORM_H

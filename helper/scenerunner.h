@@ -155,7 +155,7 @@ private:
             scene.update(float(glfwGetTime()), window);
             scene.render();
 
-            guiWindow.perFrame();
+            guiWindow.perFrame(scene);
 
         }
     }

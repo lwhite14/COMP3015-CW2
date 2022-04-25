@@ -1,8 +1,8 @@
 #include "GUIWindow.h"
 
-void GUIWindow::drawElements()
+void GUIWindow::drawElements(Scene& scene)
 {
-    //ImGui::ShowDemoWindow();
+    ImGui::ShowDemoWindow();
 
     ImGuiWindowFlags windowFlags = 0;
     windowFlags |= ImGuiWindowFlags_NoTitleBar;
@@ -11,8 +11,14 @@ void GUIWindow::drawElements()
 
     ImGui::Begin("Debug", NULL, windowFlags);
     ImGui::Text("FPS: %.1f", ImGui::GetIO().Framerate);
-    ImGui::Button("Normal Shading");
-    ImGui::Button("Silhouette Shading");
+    if (ImGui::Button("Normal Shading")) 
+    {
+        scene.setNormalShading();
+    }
+    if (ImGui::Button("Silhouette Shading")) 
+    {
+        scene.setSilhouetteShading();
+    }
     ImGui::Text("Press Left Shift to toggle to debug menu");
     ImGui::SetWindowPos(ImVec2(0, 0));
     ImGui::SetWindowSize(ImVec2(400, 260));
@@ -30,13 +36,13 @@ void GUIWindow::init(GLFWwindow* window)
     ImGui_ImplOpenGL3_Init("#version 450");
 }
 
-void GUIWindow::perFrame()
+void GUIWindow::perFrame(Scene& scene)
 {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
 
-    drawElements();
+    drawElements(scene);
 
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

@@ -182,3 +182,13 @@ void SceneBasic_Uniform::bindTex(GLuint unit, GLuint texture)
     glActiveTexture(unit);
     glBindTexture(GL_TEXTURE_2D, texture);
 }
+
+void SceneBasic_Uniform::setNormalShading()
+{
+
+}
+
+void SceneBasic_Uniform::setSilhouetteShading()
+{
+
+}

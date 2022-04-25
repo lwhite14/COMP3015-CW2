@@ -21,25 +21,22 @@ public:
 	    height = h;
 	}
 	
-    /**
-      Load textures, initialize shaders, etc.
-      */
+    // Load textures, initialize shaders, etc.
     virtual void initScene() = 0;
 
-    /**
-      This is called prior to every frame.  Use this
-      to update your animation.
-      */
+    // This is called prior to every frame. Use this to update your animation.
     virtual void update(float t, GLFWwindow* window) = 0;
 
-    /**
-      Draw your scene.
-      */
+    // Draw your scene.
     virtual void render() = 0;
 
-    /**
-      Called when screen is resized
-      */
+    // Called when screen is resized
     virtual void resize(int, int) = 0;
+
+    // Called when wanting to switch to normal shading
+    virtual void setNormalShading() = 0;
+
+    // Call when wanting to switch to silhouette shading
+    virtual void setSilhouetteShading() = 0;
     
 };
