@@ -11,16 +11,22 @@
 #include <fstream>
 #include <iostream>
 
+#include "GUIWindow.h"
+
 class SceneRunner {
 private:
     GLFWwindow * window;
     int fbw, fbh;
-	bool debug;           // Set true to enable debug messages
+	bool debug;
+    GUIWindow guiWindow;
 
 public:
     SceneRunner(const std::string & windowTitle, int width = WIN_WIDTH, int height = WIN_HEIGHT, int samples = 0) : debug(true) {
         // Initialize GLFW
-        if( !glfwInit() ) exit( EXIT_FAILURE );
+        if (!glfwInit()) 
+        {
+            exit(EXIT_FAILURE);
+        }
 
 #ifdef __APPLE__
         // Select OpenGL 4.1
@@ -67,6 +73,8 @@ public:
 				GL_DEBUG_SEVERITY_NOTIFICATION, -1, "Start debugging");
 		}
 #endif
+        guiWindow = GUIWindow();
+        guiWindow.init(window);
     }
 
     int run(Scene & scene) {
@@ -74,7 +82,8 @@ public:
         scene.initScene();
         scene.resize(fbw, fbh); 
 
-        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+        //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 
         // Enter the main loop
         mainLoop(window, scene);
@@ -84,6 +93,8 @@ public:
 			glDebugMessageInsert(GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_MARKER, 1,
 				GL_DEBUG_SEVERITY_NOTIFICATION, -1, "End debug");
 #endif
+
+        guiWindow.cleanUp();
 
 		// Close window and terminate GLFW
 		glfwTerminate();
@@ -120,14 +131,16 @@ private:
 
     void mainLoop(GLFWwindow * window, Scene & scene) {
         while( ! glfwWindowShouldClose(window) && !glfwGetKey(window, GLFW_KEY_ESCAPE) ) {
-            GLUtils::checkForOpenGLError(__FILE__,__LINE__);
-			
+            GLUtils::checkForOpenGLError(__FILE__, __LINE__);
+
+            glfwSwapBuffers(window);
+            glfwPollEvents();
+
             scene.update(float(glfwGetTime()), window);
             scene.render();
-            glfwSwapBuffers(window);
 
-            glfwPollEvents();
-			int state = glfwGetKey(window, GLFW_KEY_SPACE);
+            guiWindow.perFrame();
+
         }
     }
 };
