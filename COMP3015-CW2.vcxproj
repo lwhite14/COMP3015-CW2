@@ -212,6 +212,9 @@
     <None Include="shader\basic_uniform.vert" />
     <None Include="shader\normal_map.frag" />
     <None Include="shader\normal_map.vert" />
+    <None Include="shader\silhouette_lines.frag" />
+    <None Include="shader\silhouette_lines.geom" />
+    <None Include="shader\silhouette_lines.vert" />
     <None Include="shader\skybox.frag" />
     <None Include="shader\skybox.vert" />
     <None Include="shader\spotlight.frag" />

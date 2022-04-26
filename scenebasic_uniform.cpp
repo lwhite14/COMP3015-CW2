@@ -24,10 +24,12 @@ SceneBasic_Uniform::SceneBasic_Uniform() :  pointLight(Light(vec4(45.0f, -25.0f,
                                                 40.0f,
                                                 glm::radians(20.0f))),
                                             sky(500.0f),
-                                            teapot(14, mat4(1.0f))
+                                            teapot(14, mat4(1.0f)),
+                                            isNormalShading(true), 
+                                            isSilhouetteShading(false)
 {
-    ufo = ObjMesh::load("media/ufo.obj");
-    meteor = ObjMesh::load("media/meteor.obj");
+    ufo = ObjMesh::loadWithAdjacency("media/ufo.obj");
+    meteor = ObjMesh::loadWithAdjacency("media/meteor.obj");
 }
 
 
@@ -73,6 +75,11 @@ void SceneBasic_Uniform::compile()
         spotlightProgram.compileShader("shader/spotlight.vert");
         spotlightProgram.compileShader("shader/spotlight.frag");
         spotlightProgram.link();
+
+        silhouetteProgram.compileShader("shader/silhouette_lines.vert");
+        silhouetteProgram.compileShader("shader/silhouette_lines.frag");
+        silhouetteProgram.compileShader("shader/silhouette_lines.geom");
+        silhouetteProgram.link();
     }
     catch (GLSLProgramException& e)
     {
@@ -102,63 +109,101 @@ void SceneBasic_Uniform::render()
     setMatrices(skyboxProgram);
     sky.render();
 
-    // UFO
-    normalProgram.use();
-    normalProgram.setUniform("Light.Position", pointLight.position);
-    normalProgram.setUniform("Light.La", pointLight.ambient);
-    normalProgram.setUniform("Light.L", pointLight.diffSpec);
-    normalProgram.setUniform("Material.Kd", vec3(0.5f));
-    normalProgram.setUniform("Material.Ks", vec3(0.5f));
-    normalProgram.setUniform("Material.Ka", vec3(0.25f, 0.25f, 1.0f));
-    normalProgram.setUniform("Material.Shininess", 128.0f);
-    model = mat4(1.0f);
-    model = glm::rotate(model, 5.0f, vec3(0.0f, 1.0f, 0.0f));
-    model = glm::translate(model, vec3(5.0f, 20.0f, 0.0f));
-    setMatrices(normalProgram);
-    bindTex(GL_TEXTURE0, ufoDiffuseTex);
-    bindTex(GL_TEXTURE1, ufoNormalTex);
-    ufo->render();
 
-    // Meteors
-    spotlightProgram.use();
-    spotlightProgram.setUniform("Spot.L", spotLight.diffSpec);
-    spotlightProgram.setUniform("Spot.La", spotLight.ambient);
-    spotlightProgram.setUniform("Spot.Exponent", spotLight.exponent);
-    spotlightProgram.setUniform("Spot.Cutoff", spotLight.cutoff);
-    mat3 normalMatrix = mat3(vec3(view[0]), vec3(view[1]), vec3(view[2]));
-    spotLight.direction = normalMatrix * vec3(-spotLight.position);
-    spotlightProgram.setUniform("Spot.Position", view * spotLight.position);
-    spotlightProgram.setUniform("Spot.Direction", spotLight.direction);
-    spotlightProgram.setUniform("Point.Position", pointLight.position);
-    spotlightProgram.setUniform("Point.La", pointLight.ambient);
-    spotlightProgram.setUniform("Point.L", pointLight.diffSpec);
-    spotlightProgram.setUniform("Material.Kd", vec3(0.5f));
-    spotlightProgram.setUniform("Material.Ks", vec3(0.5f));
-    spotlightProgram.setUniform("Material.Ka", vec3(0.5f, 0.5f, 0.65f));
-    spotlightProgram.setUniform("Material.Shininess", 1024.0f);
-    bindTex(GL_TEXTURE0, rockTex);
-    for (unsigned int i = 0; i < meteorPositions.size(); i++)
+    if (isNormalShading) 
     {
+        // UFO
+        normalProgram.use();
+        normalProgram.setUniform("Light.Position", pointLight.position);
+        normalProgram.setUniform("Light.La", pointLight.ambient);
+        normalProgram.setUniform("Light.L", pointLight.diffSpec);
+        normalProgram.setUniform("Material.Kd", vec3(0.5f));
+        normalProgram.setUniform("Material.Ks", vec3(0.5f));
+        normalProgram.setUniform("Material.Ka", vec3(0.25f, 0.25f, 1.0f));
+        normalProgram.setUniform("Material.Shininess", 128.0f);
         model = mat4(1.0f);
-        model = glm::rotate(model, meteorRotations[i], vec3(0.0f, 1.0f, 0.0f));
-        model = glm::translate(model, meteorPositions[i]);
-        setMatrices(spotlightProgram);
-        meteor->render();
-    }
+        model = glm::rotate(model, 5.0f, vec3(0.0f, 1.0f, 0.0f));
+        model = glm::translate(model, vec3(5.0f, 20.0f, 0.0f));
+        setMatrices(normalProgram);
+        bindTex(GL_TEXTURE0, ufoDiffuseTex);
+        bindTex(GL_TEXTURE1, ufoNormalTex);
+        ufo->render();
 
-    // Teapot
-    spotlightProgram.setUniform("Light.L", pointLight.diffSpec);
-    spotlightProgram.setUniform("Light.La", pointLight.ambient);
-    spotlightProgram.setUniform("Light.Position", pointLight.position);
-    spotlightProgram.setUniform("Material.Kd", 1.0f, 1.0f, 1.0f);
-    spotlightProgram.setUniform("Material.Ks", 1.0f, 1.0f, 1.0f);
-    spotlightProgram.setUniform("Material.Ka", 1.0f, 1.0f, 1.0f);
-    spotlightProgram.setUniform("Material.Shininess", 100.0f);
-    model = mat4(1.0f);
-    model = glm::translate(model, vec3(0.0f, -11.25f, 0.0f));
-    model = glm::rotate(model, glm::radians(-90.0f), vec3(1.0f, 0.0f, 0.0f));
-    setMatrices(spotlightProgram);
-    teapot.render();
+        // Meteors
+        spotlightProgram.use();
+        spotlightProgram.setUniform("Spot.L", spotLight.diffSpec);
+        spotlightProgram.setUniform("Spot.La", spotLight.ambient);
+        spotlightProgram.setUniform("Spot.Exponent", spotLight.exponent);
+        spotlightProgram.setUniform("Spot.Cutoff", spotLight.cutoff);
+        mat3 normalMatrix = mat3(vec3(view[0]), vec3(view[1]), vec3(view[2]));
+        spotLight.direction = normalMatrix * vec3(-spotLight.position);
+        spotlightProgram.setUniform("Spot.Position", view * spotLight.position);
+        spotlightProgram.setUniform("Spot.Direction", spotLight.direction);
+        spotlightProgram.setUniform("Point.Position", pointLight.position);
+        spotlightProgram.setUniform("Point.La", pointLight.ambient);
+        spotlightProgram.setUniform("Point.L", pointLight.diffSpec);
+        spotlightProgram.setUniform("Material.Kd", vec3(0.5f));
+        spotlightProgram.setUniform("Material.Ks", vec3(0.5f));
+        spotlightProgram.setUniform("Material.Ka", vec3(0.5f, 0.5f, 0.65f));
+        spotlightProgram.setUniform("Material.Shininess", 1024.0f);
+        bindTex(GL_TEXTURE0, rockTex);
+        for (unsigned int i = 0; i < meteorPositions.size(); i++)
+        {
+            model = mat4(1.0f);
+            model = glm::rotate(model, meteorRotations[i], vec3(0.0f, 1.0f, 0.0f));
+            model = glm::translate(model, meteorPositions[i]);
+            setMatrices(spotlightProgram);
+            meteor->render();
+        }
+
+        // Teapot
+        spotlightProgram.setUniform("Light.L", pointLight.diffSpec);
+        spotlightProgram.setUniform("Light.La", pointLight.ambient);
+        spotlightProgram.setUniform("Light.Position", pointLight.position);
+        spotlightProgram.setUniform("Material.Kd", 1.0f, 1.0f, 1.0f);
+        spotlightProgram.setUniform("Material.Ks", 1.0f, 1.0f, 1.0f);
+        spotlightProgram.setUniform("Material.Ka", 1.0f, 1.0f, 1.0f);
+        spotlightProgram.setUniform("Material.Shininess", 100.0f);
+        model = mat4(1.0f);
+        model = glm::translate(model, vec3(0.0f, -11.25f, 0.0f));
+        model = glm::rotate(model, glm::radians(-90.0f), vec3(1.0f, 0.0f, 0.0f));
+        setMatrices(spotlightProgram);
+        teapot.render();
+    }
+    if (isSilhouetteShading) 
+    {
+        // UFO
+        silhouetteProgram.use();
+        silhouetteProgram.setUniform("EdgeWidth", 0.008f);
+        silhouetteProgram.setUniform("PctExtend", 0.25f);
+        silhouetteProgram.setUniform("LineColor", vec4(0.0f, 0.0f, 0.0f, 1.0f));
+        silhouetteProgram.setUniform("Material.Kd", 0.1f, 0.25f, 0.7f);
+        silhouetteProgram.setUniform("Material.Ka", 0.2f, 0.2f, 0.2f);
+        silhouetteProgram.setUniform("Light.Position", pointLight.position);
+        silhouetteProgram.setUniform("Light.Intensity", pointLight.diffSpec);
+        model = mat4(1.0f);
+        model = glm::rotate(model, 5.0f, vec3(0.0f, 1.0f, 0.0f));
+        model = glm::translate(model, vec3(5.0f, 20.0f, 0.0f));
+        setMatrices(silhouetteProgram);
+        ufo->render();
+
+        // Meteors
+        silhouetteProgram.setUniform("EdgeWidth", 0.001f);
+        silhouetteProgram.setUniform("PctExtend", 0.25f);
+        silhouetteProgram.setUniform("LineColor", vec4(0.0f, 0.0f, 0.0f, 1.0f));
+        silhouetteProgram.setUniform("Material.Kd", 0.1f, 0.25f, 0.7f);
+        silhouetteProgram.setUniform("Material.Ka", 0.2f, 0.2f, 0.2f);
+        silhouetteProgram.setUniform("Light.Position", pointLight.position);
+        silhouetteProgram.setUniform("Light.Intensity", pointLight.diffSpec);
+        for (unsigned int i = 0; i < meteorPositions.size(); i++)
+        {
+            model = mat4(1.0f);
+            model = glm::rotate(model, meteorRotations[i], vec3(0.0f, 1.0f, 0.0f));
+            model = glm::translate(model, meteorPositions[i]);
+            setMatrices(silhouetteProgram);
+            meteor->render();
+        }
+    }
 }
 
 void SceneBasic_Uniform::setMatrices(GLSLProgram& prog)
@@ -185,10 +230,12 @@ void SceneBasic_Uniform::bindTex(GLuint unit, GLuint texture)
 
 void SceneBasic_Uniform::setNormalShading()
 {
-
+    isNormalShading = true;
+    isSilhouetteShading = false;
 }
 
 void SceneBasic_Uniform::setSilhouetteShading()
 {
-
+    isNormalShading = false;
+    isSilhouetteShading = true;
 }

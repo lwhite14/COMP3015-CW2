@@ -44,15 +44,15 @@ public:
 
 		firstMouse = true;
 		canFirstMouse = true;
-		yaw = -90.0f;
-		pitch = 0.0f;
+		yaw = -119.7;
+		pitch = -26.6;
 		lastX = SCR_WIDTH / 2.0;
 		lastY = SCR_HEIGHT / 2.0;
 
 		motion = { false,false,false,false };
 
-		cameraPos = glm::vec3(0, 0, 0);
-		cameraFront = glm::vec3(0.0, 0.0, 1.0);
+		cameraPos = glm::vec3(35.0f, 52.0f, 106.0f);
+		cameraFront = glm::vec3(-0.443018, -0.447759, -0.77669);
 		cameraUp = glm::vec3(0.0, 1.0, 0.0);
 	}
 
