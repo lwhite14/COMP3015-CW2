@@ -29,13 +29,13 @@ void GUIWindow::drawElements(Scene& scene)
 
 GUIWindow::GUIWindow() 
 {
-    ufoPos[0] = 5.0f;
+    ufoPos[0] = 0.0f;
     ufoPos[1] = 20.0f;
     ufoPos[2] = 0.0f;
     ufoPos[3] = 0.0f;
 
     spotPos[0] = 0.0f;
-    spotPos[1] = 30.0f;
+    spotPos[1] = 20.0f;
     spotPos[2] = 0.0f;
     spotPos[3] = 0.0f;
 }

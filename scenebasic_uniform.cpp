@@ -14,11 +14,11 @@ using glm::mat4;
 #include "helper/texture.h"
 
 
-SceneBasic_Uniform::SceneBasic_Uniform() :  ufoPosition(vec3(5.0f, 20.0f, 0.0f)),
+SceneBasic_Uniform::SceneBasic_Uniform() :  ufoPosition(vec3(0.0f, 20.0f, 0.0f)),
                                             pointLight(Light(vec4(45.0f, -25.0f, 125.0f, 1.0),
                                                 vec3(0.0f, 0.0f, 0.15f),
                                                 vec3(1.0f))),
-                                            spotLight(Light(vec4(vec3(0.0f, 30.0f, 0.0f), 1.0f),
+                                            spotLight(Light(vec4(vec3(0.0f, 20.0f, 0.0f), 1.0f),
                                                 vec3(0.0f),
                                                 vec3(0.2f, 0.95f, 0.2f),
                                                 vec3(),
