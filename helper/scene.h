@@ -36,7 +36,11 @@ public:
     // Called when wanting to switch to normal shading
     virtual void setNormalShading() = 0;
 
-    // Call when wanting to switch to silhouette shading
+    // Called when wanting to switch to silhouette shading
     virtual void setSilhouetteShading() = 0;
-    
+
+    // Called when wanting to change the UFOs position.
+    virtual void setUfoPosition(float newX, float newY, float newZ) = 0;
+
+    virtual void setSpotPosition(float newX, float newY, float newZ) = 0; 
 };

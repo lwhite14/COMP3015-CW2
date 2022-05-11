@@ -22,6 +22,7 @@ private:
     SkyBox sky;
     GLuint skyboxTex, ufoDiffuseTex, ufoNormalTex, rockTex;
     Teapot teapot;
+    glm::vec3 ufoPosition;
 
     //Shading States
     bool isNormalShading, isSilhouetteShading;
@@ -42,6 +43,8 @@ public:
     void resize(int, int);
     void setNormalShading();
     void setSilhouetteShading();
+    void setUfoPosition(float newX, float newY, float newZ);
+    void setSpotPosition(float newX, float newY, float newZ);
 };
 
 #endif // SCENEBASIC_UNIFORM_H

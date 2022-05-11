@@ -19,13 +19,26 @@ void GUIWindow::drawElements(Scene& scene)
     {
         scene.setSilhouetteShading();
     }
+    ImGui::DragFloat3(" - UFO Position", ufoPos, 0.25f, -200.0f, 200.0f);
+    ImGui::DragFloat3(" - Spot Light Position", spotPos, 0.25f, -200.0f, 200.0f);
     ImGui::Text("Press Left Shift to toggle to debug menu");
     ImGui::SetWindowPos(ImVec2(0, 0));
-    ImGui::SetWindowSize(ImVec2(400, 260));
+    ImGui::SetWindowSize(ImVec2(500, 260));
     ImGui::End();
 }
 
-GUIWindow::GUIWindow() { }
+GUIWindow::GUIWindow() 
+{
+    ufoPos[0] = 5.0f;
+    ufoPos[1] = 20.0f;
+    ufoPos[2] = 0.0f;
+    ufoPos[3] = 0.0f;
+
+    spotPos[0] = 0.0f;
+    spotPos[1] = 30.0f;
+    spotPos[2] = 0.0f;
+    spotPos[3] = 0.0f;
+}
 
 void GUIWindow::init(GLFWwindow* window)
 {
@@ -43,6 +56,8 @@ void GUIWindow::perFrame(Scene& scene)
     ImGui::NewFrame();
 
     drawElements(scene);
+    scene.setUfoPosition(ufoPos[0], ufoPos[1], ufoPos[2]);
+    scene.setSpotPosition(spotPos[0], spotPos[1], spotPos[2]);
 
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
