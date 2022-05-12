@@ -46,4 +46,6 @@ public:
     virtual void setUfoPosition(float newX, float newY, float newZ) = 0;
 
     virtual void setSpotPosition(float newX, float newY, float newZ) = 0; 
+
+    virtual void setPointPosition(float newX, float newY, float newZ) = 0; 
 };

@@ -194,6 +194,12 @@ void SceneBasic_Uniform::render()
         setMatrices(basicProgram);
         cube.render();
 
+        // Pointlight Indicator
+        model = mat4(1.0f);
+        model = glm::translate(model, vec3(pointLight.position.x, pointLight.position.y, pointLight.position.z));
+        setMatrices(basicProgram);
+        cube.render();
+
     }
     if (isSilhouetteShading) 
     {
@@ -299,6 +305,11 @@ void SceneBasic_Uniform::setUfoPosition(float newX, float newY, float newZ)
 void SceneBasic_Uniform::setSpotPosition(float newX, float newY, float newZ)
 {
     spotLight.position = vec4(vec3(newX, newY, newZ), 1.0f);
+}
+
+void SceneBasic_Uniform::setPointPosition(float newX, float newY, float newZ) 
+{
+    pointLight.position = vec4(vec3(newX, newY, newZ), 1.0f);
 }
 
 void SceneBasic_Uniform::initGauss()

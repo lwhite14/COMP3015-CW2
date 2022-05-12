@@ -60,6 +60,7 @@ public:
     void setGaussianShading();
     void setUfoPosition(float newX, float newY, float newZ);
     void setSpotPosition(float newX, float newY, float newZ);
+    void setPointPosition(float newX, float newY, float newZ);
 };
 
 #endif // SCENEBASIC_UNIFORM_H
