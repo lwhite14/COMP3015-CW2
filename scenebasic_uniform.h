@@ -10,7 +10,7 @@
 #include <glm/glm.hpp>
 #include "helper/cube.h"
 #include "helper/skybox.h"
-#include "helper/light.h"
+#include "customsrc/light.h"
 #include "helper/teapot.h"
 
 class SceneBasic_Uniform : public Scene

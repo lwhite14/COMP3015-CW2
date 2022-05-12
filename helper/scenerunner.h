@@ -11,7 +11,7 @@
 #include <fstream>
 #include <iostream>
 
-#include "gui.h"
+#include "../customsrc/gui.h"
 
 class SceneRunner {
 private:

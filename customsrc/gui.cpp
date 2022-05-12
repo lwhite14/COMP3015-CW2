@@ -2,7 +2,7 @@
 
 void GUIWindow::drawElements(Scene& scene)
 {
-    ImGui::ShowDemoWindow();
+    //ImGui::ShowDemoWindow();
 
     ImGuiWindowFlags windowFlags = 0;
     windowFlags |= ImGuiWindowFlags_NoTitleBar;
