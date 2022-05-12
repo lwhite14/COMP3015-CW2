@@ -81,6 +81,10 @@ void SceneBasic_Uniform::compile()
         silhouetteProgram.compileShader("shader/silhouette_lines.frag");
         silhouetteProgram.compileShader("shader/silhouette_lines.geom");
         silhouetteProgram.link();
+
+        basicProgram.compileShader("shader/basic.vert");
+        basicProgram.compileShader("shader/basic.frag");
+        basicProgram.link();
     }
     catch (GLSLProgramException& e)
     {
@@ -170,6 +174,15 @@ void SceneBasic_Uniform::render()
         model = glm::rotate(model, glm::radians(-90.0f), vec3(1.0f, 0.0f, 0.0f));
         setMatrices(spotlightProgram);
         teapot.render();
+
+        // Spotlight Indicator
+        basicProgram.use();
+        basicProgram.setUniform("Colour", vec3(1.0f, 0.0f, 0.0f));
+        model = mat4(1.0f);
+        model = glm::translate(model, vec3(spotLight.position.x, spotLight.position.y, spotLight.position.z));
+        setMatrices(basicProgram);
+        cube.render();
+
     }
     if (isSilhouetteShading) 
     {

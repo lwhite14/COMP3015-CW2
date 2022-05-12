@@ -16,13 +16,14 @@
 class SceneBasic_Uniform : public Scene
 {
 private:
-    GLSLProgram skyboxProgram, normalProgram, spotlightProgram, silhouetteProgram;
+    GLSLProgram skyboxProgram, normalProgram, spotlightProgram, silhouetteProgram, basicProgram;
     std::unique_ptr<ObjMesh> ufo, meteor;
     Light pointLight, spotLight;
     SkyBox sky;
     GLuint skyboxTex, ufoDiffuseTex, ufoNormalTex, rockTex;
     Teapot teapot;
     glm::vec3 ufoPosition;
+    Cube cube;
 
     //Shading States
     bool isNormalShading, isSilhouetteShading;

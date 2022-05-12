@@ -208,6 +208,8 @@
   <ItemGroup>
     <None Include=".gitignore" />
     <None Include="README.md" />
+    <None Include="shader\basic.frag" />
+    <None Include="shader\basic.vert" />
     <None Include="shader\basic_uniform.frag" />
     <None Include="shader\basic_uniform.vert" />
     <None Include="shader\normal_map.frag" />
