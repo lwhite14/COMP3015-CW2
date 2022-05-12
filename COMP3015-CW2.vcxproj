@@ -151,7 +151,7 @@
     <ClInclude Include="helper\drawable.h" />
     <ClInclude Include="helper\glslprogram.h" />
     <ClInclude Include="helper\glutils.h" />
-    <ClInclude Include="helper\GUIWindow.h" />
+    <ClInclude Include="helper\gui.h" />
     <ClInclude Include="helper\light.h" />
     <ClInclude Include="helper\motion.h" />
     <ClInclude Include="helper\objmesh.h" />
@@ -185,7 +185,7 @@
     <ClCompile Include="helper\cube.cpp" />
     <ClCompile Include="helper\glslprogram.cpp" />
     <ClCompile Include="helper\glutils.cpp" />
-    <ClCompile Include="helper\GUIWindow.cpp" />
+    <ClCompile Include="helper\gui.cpp" />
     <ClCompile Include="helper\objmesh.cpp" />
     <ClCompile Include="helper\plane.cpp" />
     <ClCompile Include="helper\skybox.cpp" />
@@ -214,6 +214,7 @@
     <None Include="shader\basic_uniform.vert" />
     <None Include="shader\normal_map.frag" />
     <None Include="shader\normal_map.vert" />
+    <None Include="shader\normal_map_gaussian.frag" />
     <None Include="shader\silhouette_lines.frag" />
     <None Include="shader\silhouette_lines.geom" />
     <None Include="shader\silhouette_lines.vert" />
@@ -221,6 +222,7 @@
     <None Include="shader\skybox.vert" />
     <None Include="shader\spotlight.frag" />
     <None Include="shader\spotlight.vert" />
+    <None Include="shader\spotlight_gaussian.frag" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

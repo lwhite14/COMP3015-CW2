@@ -1,4 +1,4 @@
-#include "GUIWindow.h"
+#include "gui.h"
 
 void GUIWindow::drawElements(Scene& scene)
 {
@@ -18,6 +18,10 @@ void GUIWindow::drawElements(Scene& scene)
     if (ImGui::Button("Silhouette Shading")) 
     {
         scene.setSilhouetteShading();
+    }
+    if (ImGui::Button("Gaussian Blur"))
+    {
+        scene.setGaussianShading();
     }
     ImGui::DragFloat3(" - UFO Position", ufoPos, 0.25f, -200.0f, 200.0f);
     ImGui::DragFloat3(" - Spot Light Position", spotPos, 0.25f, -200.0f, 200.0f);

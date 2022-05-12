@@ -16,7 +16,7 @@
 class SceneBasic_Uniform : public Scene
 {
 private:
-    GLSLProgram skyboxProgram, normalProgram, spotlightProgram, silhouetteProgram, basicProgram;
+    GLSLProgram skyboxProgram, normalProgram, spotlightProgram, silhouetteProgram, basicProgram, spotlightGaussianProgram, normalGaussianProgram;
     std::unique_ptr<ObjMesh> ufo, meteor;
     Light pointLight, spotLight;
     SkyBox sky;
@@ -26,15 +26,28 @@ private:
     Cube cube;
 
     //Shading States
-    bool isNormalShading, isSilhouetteShading;
+    bool isNormalShading, isSilhouetteShading, isGaussianBlur;
 
     // Meteor properties
     std::vector<vec3> meteorPositions;
     std::vector<float> meteorRotations;
 
+    // For gaussian blur
+    GLuint fsQuad;
+    GLuint renderFBO, intermediateFBO;
+    GLuint renderTex, intermediateTex;
+
     void setMatrices(GLSLProgram& prog);
     void compile();
     void bindTex(GLuint unit, GLuint texture);
+
+    // Gaussian Functions
+    void setupFBO();
+    void pass1();
+    void pass2();
+    void pass3();
+    void initGauss();
+    float gauss(float, float);
 public:
     SceneBasic_Uniform();
 
@@ -44,6 +57,7 @@ public:
     void resize(int, int);
     void setNormalShading();
     void setSilhouetteShading();
+    void setGaussianShading();
     void setUfoPosition(float newX, float newY, float newZ);
     void setSpotPosition(float newX, float newY, float newZ);
 };
