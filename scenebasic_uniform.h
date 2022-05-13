@@ -16,7 +16,7 @@
 class SceneBasic_Uniform : public Scene
 {
 private:
-    GLSLProgram skyboxProgram, normalProgram, spotlightProgram, silhouetteProgram, basicProgram, spotlightGaussianProgram, normalGaussianProgram;
+    GLSLProgram skyboxProgram, normalProgram, spotlightProgram, silhouetteProgram, basicProgram, spotlightGaussianProgram, normalGaussianProgram, nightVisionProgram;
     std::unique_ptr<ObjMesh> ufo, meteor;
     Light pointLight, spotLight;
     SkyBox sky;
@@ -26,28 +26,40 @@ private:
     Cube cube;
 
     //Shading States
-    bool isNormalShading, isSilhouetteShading, isGaussianBlur;
+    bool isNormalShading, isSilhouetteShading, isGaussianBlur, isNightVision;
 
     // Meteor properties
     std::vector<vec3> meteorPositions;
     std::vector<float> meteorRotations;
 
     // For gaussian blur
-    GLuint fsQuad;
-    GLuint renderFBO, intermediateFBO;
-    GLuint renderTex, intermediateTex;
+    GLuint fsQuad_G;
+    GLuint renderFBO_G, intermediateFBO;
+    GLuint renderTex_G, intermediateTex;
+
+    // For night vision
+    GLuint fsQuad_NV, pass1Index, pass2Index;
+    GLuint renderFBO_NV; 
+    GLuint renderTex_NV;
+    GLuint noiseTex;
 
     void setMatrices(GLSLProgram& prog);
     void compile();
     void bindTex(GLuint unit, GLuint texture);
 
     // Gaussian Functions
-    void setupFBO();
-    void pass1();
-    void pass2();
-    void pass3();
+    void setupFBO_G();
+    void pass1_G();
+    void pass2_G();
+    void pass3_G();
     void initGauss();
     float gauss(float, float);
+
+    //Night Vision Functions
+    void setupFBO_NV();
+    void pass1_NV();
+    void pass2_NV();
+    void initNightVision();
 public:
     SceneBasic_Uniform();
 
@@ -58,6 +70,7 @@ public:
     void setNormalShading();
     void setSilhouetteShading();
     void setGaussianShading();
+    void setNightVisionShading();
     void setUfoPosition(float newX, float newY, float newZ);
     void setSpotPosition(float newX, float newY, float newZ);
     void setPointPosition(float newX, float newY, float newZ);

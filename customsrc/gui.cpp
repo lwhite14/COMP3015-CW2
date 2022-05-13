@@ -23,6 +23,10 @@ void GUIWindow::drawElements(Scene& scene)
     {
         scene.setGaussianShading();
     }
+    if (ImGui::Button("Night Vision"))
+    {
+        scene.setNightVisionShading();
+    }
     ImGui::DragFloat3(" - UFO Position", ufoPos, 0.25f, -200.0f, 200.0f);
     ImGui::DragFloat3(" - Spot Light Position", spotPos, 0.25f, -200.0f, 200.0f);
     ImGui::DragFloat3(" - Point Light Position", pointPos, 0.25f, -250.0f, 250.0f);

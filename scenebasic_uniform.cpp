@@ -28,7 +28,8 @@ SceneBasic_Uniform::SceneBasic_Uniform() :  ufoPosition(vec3(0.0f, 20.0f, 0.0f))
                                             teapot(14, mat4(1.0f)),
                                             isNormalShading(true), 
                                             isSilhouetteShading(false),
-                                            isGaussianBlur(false)
+                                            isGaussianBlur(false),
+                                            isNightVision(false)
 {
     ufo = ObjMesh::loadWithAdjacency("media/ufo.obj");
     meteor = ObjMesh::loadWithAdjacency("media/meteor.obj");
@@ -238,9 +239,9 @@ void SceneBasic_Uniform::render()
 
     if (isGaussianBlur) 
     {
-        pass1();
-        pass2();
-        pass3();
+        pass1_G();
+        pass2_G();
+        pass3_G();
     }
 }
 
@@ -276,6 +277,7 @@ void SceneBasic_Uniform::setNormalShading()
     isNormalShading = true;
     isSilhouetteShading = false;
     isGaussianBlur = false;
+    isNightVision = false;
 }
 
 void SceneBasic_Uniform::setSilhouetteShading()
@@ -288,6 +290,7 @@ void SceneBasic_Uniform::setSilhouetteShading()
     isNormalShading = false;
     isSilhouetteShading = true;
     isGaussianBlur = false;
+    isNightVision = false;
 }
 
 void SceneBasic_Uniform::setGaussianShading()
@@ -295,6 +298,20 @@ void SceneBasic_Uniform::setGaussianShading()
     isNormalShading = false;
     isSilhouetteShading = false;
     isGaussianBlur = true;
+    isNightVision = false;
+}
+
+void SceneBasic_Uniform::setNightVisionShading()
+{
+    if (isGaussianBlur)
+    {
+        projection = glm::perspective(glm::radians(80.0f), (float)width / height, 0.3f, 1000.0f);
+    }
+
+    isNormalShading = false;
+    isSilhouetteShading = false;
+    isGaussianBlur = false;
+    isNightVision = true;
 }
 
 void SceneBasic_Uniform::setUfoPosition(float newX, float newY, float newZ)
@@ -315,7 +332,7 @@ void SceneBasic_Uniform::setPointPosition(float newX, float newY, float newZ)
 void SceneBasic_Uniform::initGauss()
 {
     compile();
-    setupFBO();
+    setupFBO_G();
     // Array for full-screen quad
     GLfloat verts[] =
     {
@@ -335,8 +352,8 @@ void SceneBasic_Uniform::initGauss()
     glBindBuffer(GL_ARRAY_BUFFER, handle[1]);
     glBufferData(GL_ARRAY_BUFFER, 6 * 2 * sizeof(float), tc, GL_STATIC_DRAW);
     // Set up the vertex array object
-    glGenVertexArrays(1, &fsQuad);
-    glBindVertexArray(fsQuad);
+    glGenVertexArrays(1, &fsQuad_G);
+    glBindVertexArray(fsQuad_G);
     glBindBuffer(GL_ARRAY_BUFFER, handle[0]);
     glVertexAttribPointer((GLuint)0, 3, GL_FLOAT, GL_FALSE, 0, 0);
     glEnableVertexAttribArray(0); // Vertex position
@@ -369,20 +386,20 @@ void SceneBasic_Uniform::initGauss()
     }
 }
 
-void SceneBasic_Uniform::setupFBO()
+void SceneBasic_Uniform::setupFBO_G()
 {
     // Generate and bind the framebuffer
-    glGenFramebuffers(1, &renderFBO);
-    glBindFramebuffer(GL_FRAMEBUFFER, renderFBO);
+    glGenFramebuffers(1, &renderFBO_G);
+    glBindFramebuffer(GL_FRAMEBUFFER, renderFBO_G);
     // Create the texture object
-    glGenTextures(1, &renderTex);
-    glBindTexture(GL_TEXTURE_2D, renderTex);
+    glGenTextures(1, &renderTex_G);
+    glBindTexture(GL_TEXTURE_2D, renderTex_G);
     glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA8, width, height);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
     // Bind the texture to the FBO
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, renderTex, 0);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, renderTex_G, 0);
     // Create the depth buffer
     GLuint depthBuf;
     glGenRenderbuffers(1, &depthBuf);
@@ -415,13 +432,13 @@ void SceneBasic_Uniform::setupFBO()
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void SceneBasic_Uniform::pass1()
+void SceneBasic_Uniform::pass1_G()
 {
     normalGaussianProgram.use();
     normalGaussianProgram.setUniform("Pass", 1);
     spotlightGaussianProgram.use();
     spotlightGaussianProgram.setUniform("Pass", 1);
-    glBindFramebuffer(GL_FRAMEBUFFER, renderFBO);
+    glBindFramebuffer(GL_FRAMEBUFFER, renderFBO_G);
     glEnable(GL_DEPTH_TEST);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     view = camera.ViewLookAt(view);
@@ -493,7 +510,7 @@ void SceneBasic_Uniform::pass1()
     teapot.render();
 }
 
-void SceneBasic_Uniform::pass2()
+void SceneBasic_Uniform::pass2_G()
 {
     normalGaussianProgram.use();
     normalGaussianProgram.setUniform("Pass", 2);
@@ -501,7 +518,7 @@ void SceneBasic_Uniform::pass2()
     spotlightGaussianProgram.setUniform("Pass", 2);
     glBindFramebuffer(GL_FRAMEBUFFER, intermediateFBO);
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, renderTex);
+    glBindTexture(GL_TEXTURE_2D, renderTex_G);
     glDisable(GL_DEPTH_TEST);
     glClear(GL_COLOR_BUFFER_BIT);
     model = mat4(1.0f);
@@ -512,11 +529,11 @@ void SceneBasic_Uniform::pass2()
     spotlightGaussianProgram.use();
     setMatrices(spotlightGaussianProgram);
     // Render the full-screen quad
-    glBindVertexArray(fsQuad);
+    glBindVertexArray(fsQuad_G);
     glDrawArrays(GL_TRIANGLES, 0, 6);
 }
 
-void SceneBasic_Uniform::pass3()
+void SceneBasic_Uniform::pass3_G()
 {
     normalGaussianProgram.use();
     normalGaussianProgram.setUniform("Pass", 3);
@@ -534,7 +551,7 @@ void SceneBasic_Uniform::pass3()
     spotlightGaussianProgram.use();
     setMatrices(spotlightGaussianProgram);
     // Render the full-screen quad
-    glBindVertexArray(fsQuad);
+    glBindVertexArray(fsQuad_G);
     glDrawArrays(GL_TRIANGLES, 0, 6);
 }
 
