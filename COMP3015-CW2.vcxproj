@@ -145,6 +145,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="customsrc\gauss.h" />
+    <ClInclude Include="customsrc\nightvision.h" />
     <ClInclude Include="helper\aabb.h" />
     <ClInclude Include="customsrc\camera.h" />
     <ClInclude Include="helper\cube.h" />
@@ -182,6 +184,8 @@
     <ClInclude Include="scenebasic_uniform.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="customsrc\gauss.cpp" />
+    <ClCompile Include="customsrc\nightvision.cpp" />
     <ClCompile Include="glad.c" />
     <ClCompile Include="helper\cube.cpp" />
     <ClCompile Include="helper\glslprogram.cpp" />

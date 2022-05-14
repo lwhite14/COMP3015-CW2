@@ -12,54 +12,37 @@
 #include "helper/skybox.h"
 #include "customsrc/light.h"
 #include "helper/teapot.h"
+#include "customsrc/gauss.h"
+#include "customsrc/nightvision.h"
 
 class SceneBasic_Uniform : public Scene
 {
 private:
-    GLSLProgram skyboxProgram, normalProgram, spotlightProgram, silhouetteProgram, basicProgram, spotlightGaussianProgram, normalGaussianProgram, nightVisionProgram;
+    GLSLProgram skyboxProgram, normalProgram, spotlightProgram, silhouetteProgram, basicProgram;
     std::unique_ptr<ObjMesh> ufo, meteor;
     Light pointLight, spotLight;
     SkyBox sky;
     GLuint skyboxTex, ufoDiffuseTex, ufoNormalTex, rockTex;
     Teapot teapot;
-    glm::vec3 ufoPosition;
     Cube cube;
 
     //Shading States
     bool isNormalShading, isSilhouetteShading, isGaussianBlur, isNightVision;
 
-    // Meteor properties
+    // Object properties
+    glm::vec3 ufoPosition;
     std::vector<vec3> meteorPositions;
     std::vector<float> meteorRotations;
 
-    // For gaussian blur
-    GLuint fsQuad_G;
-    GLuint renderFBO_G, intermediateFBO;
-    GLuint renderTex_G, intermediateTex;
+    // For gauss
+    Gauss gauss;
 
     // For night vision
-    GLuint fsQuad_NV, pass1Index, pass2Index;
-    GLuint renderFBO_NV; 
-    GLuint renderTex_NV;
-    GLuint noiseTex;
+    NightVision nightVision;
 
     void setMatrices(GLSLProgram& prog);
     void compile();
     void bindTex(GLuint unit, GLuint texture);
-
-    // Gaussian Functions
-    void setupFBO_G();
-    void pass1_G();
-    void pass2_G();
-    void pass3_G();
-    void initGauss();
-    float gauss(float, float);
-
-    //Night Vision Functions
-    void setupFBO_NV();
-    void pass1_NV();
-    void pass2_NV();
-    void initNightVision();
 public:
     SceneBasic_Uniform();
 
