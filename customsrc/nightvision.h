@@ -22,7 +22,6 @@ private:
     GLuint noiseTex;
 
 	void setMatrices(GLSLProgram& prog, mat4 view, mat4 model, mat4 projection);
-	void bindTex(GLuint unit, GLuint texture);
 public:
     GLSLProgram program;
 
@@ -38,9 +37,6 @@ public:
         Light pointLight,
         Light spotLight,
         vec3 ufoPosition,
-        GLuint ufoDiffuseTex,
-        GLuint ufoNormalTex,
-        GLuint rockTex,
         std::unique_ptr<ObjMesh>& ufo,
         std::unique_ptr<ObjMesh>& meteor,
         Teapot& teapot,

@@ -251,7 +251,7 @@ void SceneBasic_Uniform::render()
     }
     if (isNightVision) 
     {
-        nightVision.pass1(view, model, projection, camera, width, height, pointLight, spotLight, ufoPosition, ufoDiffuseTex, ufoNormalTex, rockTex, ufo, meteor, teapot, meteorPositions, meteorRotations);
+        nightVision.pass1(view, model, projection, camera, width, height, pointLight, spotLight, ufoPosition, ufo, meteor, teapot, meteorPositions, meteorRotations);
         glFlush();
         nightVision.pass2(view, model, projection);
     }

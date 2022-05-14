@@ -106,9 +106,6 @@ void NightVision::pass1
     Light pointLight,
     Light spotLight,
     vec3 ufoPosition,
-    GLuint ufoDiffuseTex,
-    GLuint ufoNormalTex,
-    GLuint rockTex,
     std::unique_ptr<ObjMesh>& ufo,
     std::unique_ptr<ObjMesh>& meteor,
     Teapot& teapot,
@@ -136,8 +133,6 @@ void NightVision::pass1
     model = glm::rotate(model, glm::radians(-90.0f), vec3(0.0f, 1.0f, 0.0f));
     model = glm::translate(model, ufoPosition);
     setMatrices(program, view, model, projection);
-    bindTex(GL_TEXTURE0, ufoDiffuseTex);
-    bindTex(GL_TEXTURE1, ufoNormalTex);
     ufo->render();
 
     // Meteors
@@ -146,7 +141,6 @@ void NightVision::pass1
     program.setUniform("Material.Ks", 0.95f, 0.95f, 0.95f);
     program.setUniform("Material.Ka", 0.1f, 0.1f, 0.1f);
     program.setUniform("Material.Shininess", 100.0f);
-    bindTex(GL_TEXTURE0, rockTex);
     for (unsigned int i = 0; i < meteorPositions.size(); i++)
     {
         model = mat4(1.0f);
@@ -175,6 +169,8 @@ void NightVision::pass2(mat4& view, mat4& model, mat4& projection)
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, renderTex);
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, noiseTex);
     glDisable(GL_DEPTH_TEST);
 
     glClear(GL_COLOR_BUFFER_BIT);
@@ -197,10 +193,4 @@ void NightVision::setMatrices(GLSLProgram& prog, mat4 view, mat4 model, mat4 pro
     prog.setUniform("MVP", projection * mv);
     prog.setUniform("ModelViewMatrix", mv);
     prog.setUniform("NormalMatrix", glm::mat3(vec3(mv[0]), vec3(mv[1]), vec3(mv[2])));
-}
-
-void NightVision::bindTex(GLuint unit, GLuint texture)
-{
-    glActiveTexture(unit);
-    glBindTexture(GL_TEXTURE_2D, texture);
 }
