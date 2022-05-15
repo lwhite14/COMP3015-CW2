@@ -170,8 +170,8 @@ void Gauss::pass1
     normalProgram.setUniform("Material.Ka", vec3(0.25f, 0.25f, 1.0f));
     normalProgram.setUniform("Material.Shininess", 128.0f);
     model = mat4(1.0f);
-    model = glm::rotate(model, glm::radians(-90.0f), vec3(0.0f, 1.0f, 0.0f));
     model = glm::translate(model, ufoPosition);
+    model = glm::rotate(model, glm::radians(-90.0f), vec3(0.0f, 1.0f, 0.0f));
     setMatrices(normalProgram, view, model, projection);
     bindTex(GL_TEXTURE1, ufoDiffuseTex);
     bindTex(GL_TEXTURE2, ufoNormalTex);
@@ -198,8 +198,8 @@ void Gauss::pass1
     for (unsigned int i = 0; i < meteorPositions.size(); i++)
     {
         model = mat4(1.0f);
-        model = glm::rotate(model, glm::radians(meteorRotations[i]), vec3(0.0f, 1.0f, 0.0f));
         model = glm::translate(model, meteorPositions[i]);
+        model = glm::rotate(model, glm::radians(meteorRotations[i]), vec3(0.0f, 1.0f, 0.0f));
         setMatrices(spotlightProgram, view, model, projection);
         meteor->render();
     }

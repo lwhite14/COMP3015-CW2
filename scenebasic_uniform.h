@@ -26,6 +26,9 @@ private:
     Teapot teapot;
     Cube cube;
 
+    float counter; 
+    float oldT;
+
     //Shading States
     bool isNormalShading, isSilhouetteShading, isGaussianBlur, isNightVision;
 

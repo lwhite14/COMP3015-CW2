@@ -27,6 +27,8 @@ SceneBasic_Uniform::SceneBasic_Uniform() :  ufoPosition(vec3(0.0f, 20.0f, 0.0f))
                                                 glm::radians(20.0f))),
                                             sky(500.0f),
                                             teapot(14, mat4(1.0f)),
+                                            counter(0.0f),
+                                            oldT(0.0f),
                                             isNormalShading(true), 
                                             isSilhouetteShading(false),
                                             isGaussianBlur(false),
@@ -42,14 +44,14 @@ void SceneBasic_Uniform::initScene()
     meteorPositions = std::vector<vec3>
     {
        vec3(6.0f, -40.0f, 0.0f),
-       vec3(-80.0f, -60.0f, -50.0f),
-       vec3(-80.0f, -60.0f, -50.0f)
+       vec3(-40.0f, -60.0f, -50.0f),
+       vec3(-100.0f, -60.0f, 42.0f)
     };
     meteorRotations = std::vector<float>
     {
         0.0f,
-        -28.6479,
-        57.2958
+        -30.0f,
+        60.0f
     };
 
     compile();
@@ -116,6 +118,11 @@ void SceneBasic_Uniform::update(float t, GLFWwindow* window)
     camera.Movement();
     camera.KeyCallback(window);
     camera.MouseCallback(window);
+
+    float dt = t - oldT;
+    meteorRotations[1] = meteorRotations[1] + (dt*50.0f);
+    meteorRotations[2] = meteorRotations[2] + (dt*50.0f);
+    oldT = t;
 }
 
 void SceneBasic_Uniform::render()
@@ -145,8 +152,8 @@ void SceneBasic_Uniform::render()
         normalProgram.setUniform("Material.Ka", vec3(0.25f, 0.25f, 1.0f));
         normalProgram.setUniform("Material.Shininess", 128.0f);
         model = mat4(1.0f);
-        model = glm::rotate(model, glm::radians(-90.0f), vec3(0.0f, 1.0f, 0.0f));
         model = glm::translate(model, ufoPosition);
+        model = glm::rotate(model, glm::radians(-90.0f), vec3(0.0f, 1.0f, 0.0f));
         setMatrices(normalProgram);
         bindTex(GL_TEXTURE0, ufoDiffuseTex);
         bindTex(GL_TEXTURE1, ufoNormalTex);
@@ -173,8 +180,8 @@ void SceneBasic_Uniform::render()
         for (unsigned int i = 0; i < meteorPositions.size(); i++)
         {
             model = mat4(1.0f);
-            model = glm::rotate(model, glm::radians(meteorRotations[i]), vec3(0.0f, 1.0f, 0.0f));
             model = glm::translate(model, meteorPositions[i]);
+            model = glm::rotate(model, glm::radians(meteorRotations[i]), vec3(0.0f, 1.0f, 0.0f));
             setMatrices(spotlightProgram);
             meteor->render();
         }
@@ -219,9 +226,9 @@ void SceneBasic_Uniform::render()
         silhouetteProgram.setUniform("Material.Ka", 0.2f, 0.2f, 0.2f);
         silhouetteProgram.setUniform("Light.Position", pointLight.position);
         silhouetteProgram.setUniform("Light.Intensity", pointLight.diffSpec);
-        model = mat4(1.0f);
-        model = glm::rotate(model, glm::radians(-90.0f), vec3(0.0f, 1.0f, 0.0f));
+        model = mat4(1.0f);       
         model = glm::translate(model, ufoPosition);
+        model = glm::rotate(model, glm::radians(-90.0f), vec3(0.0f, 1.0f, 0.0f));
         setMatrices(silhouetteProgram);
         ufo->render();
 
@@ -236,8 +243,8 @@ void SceneBasic_Uniform::render()
         for (unsigned int i = 0; i < meteorPositions.size(); i++)
         {
             model = mat4(1.0f);
-            model = glm::rotate(model, glm::radians(meteorRotations[i]), vec3(0.0f, 1.0f, 0.0f));
             model = glm::translate(model, meteorPositions[i]);
+            model = glm::rotate(model, glm::radians(meteorRotations[i]), vec3(0.0f, 1.0f, 0.0f));
             setMatrices(silhouetteProgram);
             meteor->render();
         }

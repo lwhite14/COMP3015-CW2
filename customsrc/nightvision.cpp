@@ -130,8 +130,8 @@ void NightVision::pass1
     program.setUniform("Material.Ka", 0.1f, 0.1f, 0.1f);
     program.setUniform("Material.Shininess", 100.0f);
     model = mat4(1.0f);
-    model = glm::rotate(model, glm::radians(-90.0f), vec3(0.0f, 1.0f, 0.0f));
     model = glm::translate(model, ufoPosition);
+    model = glm::rotate(model, glm::radians(-90.0f), vec3(0.0f, 1.0f, 0.0f));
     setMatrices(program, view, model, projection);
     ufo->render();
 
@@ -144,8 +144,8 @@ void NightVision::pass1
     for (unsigned int i = 0; i < meteorPositions.size(); i++)
     {
         model = mat4(1.0f);
-        model = glm::rotate(model, glm::radians(meteorRotations[i]), vec3(0.0f, 1.0f, 0.0f));
         model = glm::translate(model, meteorPositions[i]);
+        model = glm::rotate(model, glm::radians(meteorRotations[i]), vec3(0.0f, 1.0f, 0.0f));
         setMatrices(program, view, model, projection);
         meteor->render();
     }
