@@ -19,7 +19,7 @@ SceneBasic_Uniform::SceneBasic_Uniform() :  ufoPosition(vec3(0.0f, 20.0f, 0.0f))
                                             pointLight(Light(vec4(45.0f, -25.0f, 125.0f, 1.0),
                                                 vec3(0.0f, 0.0f, 0.15f),
                                                 vec3(1.0f))),
-                                            spotLight(Light(vec4(vec3(0.0f, 20.0f, 0.0f), 1.0f),
+                                            spotLight(Light(vec4(vec3(125.0f, 25.0f, 125.0f), 1.0f),
                                                 vec3(0.0f),
                                                 vec3(0.2f, 0.95f, 0.2f),
                                                 vec3(),
@@ -119,9 +119,8 @@ void SceneBasic_Uniform::update(float t, GLFWwindow* window)
     camera.KeyCallback(window);
     camera.MouseCallback(window);
 
-    float dt = t - oldT;
-    meteorRotations[1] = meteorRotations[1] + (dt*50.0f);
-    meteorRotations[2] = meteorRotations[2] + (dt*50.0f);
+    meteorRotations[1] = meteorRotations[1] + (camera.deltaTime*50.0f);
+    meteorRotations[2] = meteorRotations[2] + (camera.deltaTime*50.0f);
     if (meteorRotations[1] > 360.0f) 
     {
         meteorRotations[1] = meteorRotations[1] - 360.0f;
@@ -130,7 +129,6 @@ void SceneBasic_Uniform::update(float t, GLFWwindow* window)
     {
         meteorRotations[2] = meteorRotations[2] - 360.0f;
     }
-    oldT = t;
 }
 
 void SceneBasic_Uniform::render()
@@ -152,7 +150,7 @@ void SceneBasic_Uniform::render()
     {
         // UFO
         normalProgram.use();
-        normalProgram.setUniform("Light.Position", pointLight.position);
+        normalProgram.setUniform("Light.Position", view * pointLight.position);
         normalProgram.setUniform("Light.La", pointLight.ambient);
         normalProgram.setUniform("Light.L", pointLight.diffSpec);
         normalProgram.setUniform("Material.Kd", vec3(0.5f));
@@ -177,7 +175,7 @@ void SceneBasic_Uniform::render()
         spotLight.direction = normalMatrix * vec3(-spotLight.position);
         spotlightProgram.setUniform("Spot.Position", view * spotLight.position);
         spotlightProgram.setUniform("Spot.Direction", spotLight.direction);
-        spotlightProgram.setUniform("Point.Position", pointLight.position);
+        spotlightProgram.setUniform("Point.Position", view * pointLight.position);
         spotlightProgram.setUniform("Point.La", pointLight.ambient);
         spotlightProgram.setUniform("Point.L", pointLight.diffSpec);
         spotlightProgram.setUniform("Material.Kd", vec3(0.5f));
@@ -197,7 +195,7 @@ void SceneBasic_Uniform::render()
         // Teapot
         spotlightProgram.setUniform("Light.L", pointLight.diffSpec);
         spotlightProgram.setUniform("Light.La", pointLight.ambient);
-        spotlightProgram.setUniform("Light.Position", pointLight.position);
+        spotlightProgram.setUniform("Light.Position", view * pointLight.position);
         spotlightProgram.setUniform("Material.Kd", 1.0f, 1.0f, 1.0f);
         spotlightProgram.setUniform("Material.Ks", 1.0f, 1.0f, 1.0f);
         spotlightProgram.setUniform("Material.Ka", 1.0f, 1.0f, 1.0f);
@@ -232,7 +230,7 @@ void SceneBasic_Uniform::render()
         silhouetteProgram.setUniform("LineColor", vec4(0.0f, 0.0f, 0.0f, 1.0f));
         silhouetteProgram.setUniform("Material.Kd", 0.1f, 0.25f, 0.7f);
         silhouetteProgram.setUniform("Material.Ka", 0.2f, 0.2f, 0.2f);
-        silhouetteProgram.setUniform("Light.Position", pointLight.position);
+        silhouetteProgram.setUniform("Light.Position", view * pointLight.position);
         silhouetteProgram.setUniform("Light.Intensity", pointLight.diffSpec);
         model = mat4(1.0f);       
         model = glm::translate(model, ufoPosition);
@@ -246,7 +244,7 @@ void SceneBasic_Uniform::render()
         silhouetteProgram.setUniform("LineColor", vec4(0.0f, 0.0f, 0.0f, 1.0f));
         silhouetteProgram.setUniform("Material.Kd", 0.1f, 0.25f, 0.7f);
         silhouetteProgram.setUniform("Material.Ka", 0.2f, 0.2f, 0.2f);
-        silhouetteProgram.setUniform("Light.Position", pointLight.position);
+        silhouetteProgram.setUniform("Light.Position", view* pointLight.position);
         silhouetteProgram.setUniform("Light.Intensity", pointLight.diffSpec);
         for (unsigned int i = 0; i < meteorPositions.size(); i++)
         {

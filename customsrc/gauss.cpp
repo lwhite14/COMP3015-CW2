@@ -162,7 +162,7 @@ void Gauss::pass1
     // Render Objects
     // UFO
     normalProgram.use();
-    normalProgram.setUniform("Light.Position", pointLight.position);
+    normalProgram.setUniform("Light.Position", view * pointLight.position);
     normalProgram.setUniform("Light.La", pointLight.ambient);
     normalProgram.setUniform("Light.L", pointLight.diffSpec);
     normalProgram.setUniform("Material.Kd", vec3(0.5f));
@@ -187,7 +187,7 @@ void Gauss::pass1
     spotLight.direction = normalMatrix * vec3(-spotLight.position);
     spotlightProgram.setUniform("Spot.Position", view * spotLight.position);
     spotlightProgram.setUniform("Spot.Direction", spotLight.direction);
-    spotlightProgram.setUniform("Point.Position", pointLight.position);
+    spotlightProgram.setUniform("Point.Position", view * pointLight.position);
     spotlightProgram.setUniform("Point.La", pointLight.ambient);
     spotlightProgram.setUniform("Point.L", pointLight.diffSpec);
     spotlightProgram.setUniform("Material.Kd", vec3(0.5f));
@@ -207,7 +207,7 @@ void Gauss::pass1
     // Teapot
     spotlightProgram.setUniform("Light.L", pointLight.diffSpec);
     spotlightProgram.setUniform("Light.La", pointLight.ambient);
-    spotlightProgram.setUniform("Light.Position", pointLight.position);
+    spotlightProgram.setUniform("Light.Position", view * pointLight.position);
     spotlightProgram.setUniform("Material.Kd", 1.0f, 1.0f, 1.0f);
     spotlightProgram.setUniform("Material.Ks", 1.0f, 1.0f, 1.0f);
     spotlightProgram.setUniform("Material.Ka", 1.0f, 1.0f, 1.0f);

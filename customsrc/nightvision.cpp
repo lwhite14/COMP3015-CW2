@@ -124,7 +124,7 @@ void NightVision::pass1
     projection = glm::perspective(glm::radians(80.0f), (float)width / height, 0.3f, 1000.0f);
 
     // UFO
-    program.setUniform("Light.Position", pointLight.position);
+    program.setUniform("Light.Position", view * pointLight.position);
     program.setUniform("Material.Kd", 0.9f, 0.9f, 0.9f);
     program.setUniform("Material.Ks", 0.95f, 0.95f, 0.95f);
     program.setUniform("Material.Ka", 0.1f, 0.1f, 0.1f);
@@ -136,7 +136,7 @@ void NightVision::pass1
     ufo->render();
 
     // Meteors
-    program.setUniform("Light.Position", pointLight.position);
+    program.setUniform("Light.Position", view * pointLight.position);
     program.setUniform("Material.Kd", 0.9f, 0.9f, 0.9f);
     program.setUniform("Material.Ks", 0.95f, 0.95f, 0.95f);
     program.setUniform("Material.Ka", 0.1f, 0.1f, 0.1f);
@@ -151,7 +151,7 @@ void NightVision::pass1
     }
 
     // Teapot
-    program.setUniform("Light.Position", pointLight.position);
+    program.setUniform("Light.Position", view * pointLight.position);
     program.setUniform("Material.Kd", 0.9f, 0.9f, 0.9f);
     program.setUniform("Material.Ks", 0.95f, 0.95f, 0.95f);
     program.setUniform("Material.Ka", 0.1f, 0.1f, 0.1f);

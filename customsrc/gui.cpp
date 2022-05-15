@@ -48,8 +48,8 @@ GUIWindow::GUIWindow()
     spotPos[2] = 0.0f;
     spotPos[3] = 0.0f;
 
-    pointPos[0] = 45.0f;
-    pointPos[1] = -25.0f;
+    pointPos[0] = 125.0f;
+    pointPos[1] = 25.0f;
     pointPos[2] = 125.0f;
     pointPos[3] = 0.0f;
 }
