@@ -122,6 +122,14 @@ void SceneBasic_Uniform::update(float t, GLFWwindow* window)
     float dt = t - oldT;
     meteorRotations[1] = meteorRotations[1] + (dt*50.0f);
     meteorRotations[2] = meteorRotations[2] + (dt*50.0f);
+    if (meteorRotations[1] > 360.0f) 
+    {
+        meteorRotations[1] = meteorRotations[1] - 360.0f;
+    }
+    if (meteorRotations[2] > 360.0f)
+    {
+        meteorRotations[2] = meteorRotations[2] - 360.0f;
+    }
     oldT = t;
 }
 
