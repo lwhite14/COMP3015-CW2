@@ -55,9 +55,6 @@ void NightVision::init(int width, int height)
     pass1Index = glGetSubroutineIndex(programHandle, GL_FRAGMENT_SHADER, "pass1");
     pass2Index = glGetSubroutineIndex(programHandle, GL_FRAGMENT_SHADER, "pass2");
 
-    program.setUniform("Width", width);
-    program.setUniform("Height", height);
-    program.setUniform("Radius", width / 3.5f);
     program.setUniform("Light.Intensity", vec3(1.0f, 1.0f, 1.0f));
 
     noiseTex = NoiseTex::generatePeriodic2DTex(200.0f, 0.5f, 512, 512);

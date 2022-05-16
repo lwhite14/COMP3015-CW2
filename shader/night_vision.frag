@@ -4,9 +4,6 @@ in vec3 Position;
 in vec3 Normal; 
 in vec2 TexCoord;
 
-uniform int Width;
-uniform int Height; 
-uniform float Radius; 
 uniform sampler2D RenderTex; 
 uniform sampler2D NoiseTex;
 

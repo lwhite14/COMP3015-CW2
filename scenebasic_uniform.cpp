@@ -44,7 +44,7 @@ void SceneBasic_Uniform::initScene()
     meteorPositions = std::vector<vec3>
     {
        vec3(6.0f, -40.0f, 0.0f),
-       vec3(-40.0f, -60.0f, -50.0f),
+       vec3(-60.0f, -60.0f, -70.0f),
        vec3(-100.0f, -60.0f, 42.0f)
     };
     meteorRotations = std::vector<float>
